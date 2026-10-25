@@ -35,7 +35,7 @@ dialog{max-height:calc(100dvh - 28px);overflow:auto}dialog[open]{animation:modal
   <div class="cycle-head"><h2>Зарплатный цикл</h2><button id="cycleSettings" class="smallbtn">Настроить</button></div>
   <div class="cycle-nav"><button id="cyclePrev" aria-label="Предыдущий цикл">‹</button><span id="cycleLabel"></span><button id="cycleNext" aria-label="Следующий цикл">›</button></div>
   <div class="cycle-card" aria-live="polite">
-    <div class="cycle-caption">Дата зарплаты</div><div id="cycleDate" class="cycle-date">—</div><div id="cycleCountdown" class="cycle-countdown"></div>
+    <div class="cycle-caption"></div><div id="cycleDate" class="cycle-date">—</div><div id="cycleCountdown" class="cycle-countdown"></div>
     <div class="progress-track" role="progressbar" aria-label="Прогресс зарплатного цикла" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="cycleProgress"><div id="cycleFill" class="progress-fill"></div></div>
     <div class="progress-label"><span id="cycleProgressText"></span><span id="cyclePercent"></span></div>
     <div class="cycle-rows">
