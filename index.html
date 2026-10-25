@@ -1,85 +1,360 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Календарь часов</title><style>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Календарь часов</title>
+<style>
+
 :root{color-scheme:dark;--bg:#0c1220;--panel:#141e30;--line:#2b3850;--text:#eef3ff;--muted:#a4b2ca;--blue:#81b3ff;--green:#6ce3b7}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}.wrap{max-width:1100px;margin:32px auto;padding:0 18px}h1{font-size:28px;margin:0 0 6px}.subtitle{color:var(--muted);margin:0 0 22px}.layout{display:grid;grid-template-columns:1.35fr 1fr;gap:20px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}.dates{display:grid;grid-template-columns:1fr 1fr;gap:12px}label,.caption{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}button,input,select{font:inherit}input,select{background:#0b1526;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px;width:100%;min-width:0}button{background:#22314a;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 13px;cursor:pointer}button:hover{filter:brightness(1.18)}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:22px 0 14px}.nav strong{font-size:18px;text-transform:capitalize}.week,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.week{font-size:12px;color:var(--muted);text-align:center;margin-bottom:8px}.day{min-height:69px;padding:6px 1px;background:#101b2d;border:1px solid transparent;position:relative}.day .num{font-size:16px}.day small{display:block;font-size:11px;color:var(--muted)}.day.range{background:#203b5e;border-color:#3c6598}.day.custom{background:#3d3524;border-color:#91733e}.day.custom small{color:#f2cf88}.day.off{background:#422735;border-color:#804457}.day.off small{color:#ffb3c3}.day.pay{box-shadow:inset 0 0 0 2px var(--green)}.day.today .num{text-decoration:underline;text-underline-offset:4px}.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12px;color:var(--muted)}.dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}.hint,.detail,.footer{color:var(--muted);font-size:12px;margin-top:12px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#0e1829;border:1px solid var(--line);border-radius:12px;padding:14px}.stat.main{grid-column:1/-1}.value{font-size:28px;font-weight:700}.main .value{font-size:38px;color:var(--blue)}h2{font-size:18px;margin:0 0 14px}.paybox{background:#122d2b;border:1px solid #365e59;border-radius:12px;padding:16px;margin-top:14px}.paydate{font-size:25px;font-weight:700;color:var(--green)}hr{border:0;border-top:1px solid var(--line);margin:22px 0}.error{font-size:13px;color:#ffaaaa;margin-top:9px}.changes{max-height:170px;overflow:auto;margin-top:12px}.change{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding:8px 0;font-size:12px}.change button{padding:4px 9px;font-size:12px}.muted{color:var(--muted)}dialog{background:var(--panel);color:var(--text);border:1px solid #3b5277;border-radius:18px;padding:24px;width:min(440px,calc(100% - 28px));box-shadow:0 25px 90px #0009}dialog::backdrop{background:#000a;backdrop-filter:blur(3px)}.modalhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px}.modalhead h2{margin:0;font-size:20px}.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0 18px}.quick button{padding:10px 2px}.quick button.active{background:#365b8a;border-color:var(--blue)}.modalbuttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.primary{background:#3873c9;border-color:#6b9cde;font-weight:600}.modnote{font-size:12px;color:var(--muted);margin-top:10px}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}@media(max-width:760px){.layout{grid-template-columns:1fr}.wrap{padding:0 12px;margin-top:20px}.panel{padding:15px}h1{font-size:24px}.day{min-height:59px}.dates{gap:8px}input{padding:10px 6px;font-size:14px}.nav strong{font-size:16px}}
 
-/* Original palette retained; movement and cycle layout only. */
-button{transition:transform .18s,background .18s,border-color .18s,box-shadow .18s}button:hover:not(:disabled){transform:translateY(-1px)}button:active:not(:disabled){transform:scale(.97)}input,select{transition:border-color .2s,box-shadow .2s}.panel{animation:panelIn .4s ease both}.panel:nth-child(2){animation-delay:.06s}.day{overflow:hidden}.day.pay:after{content:'';position:absolute;right:5px;top:5px;width:5px;height:5px;border-radius:50%;background:var(--green)}.day.focusday{animation:focusDay 1.1s ease 2}.value{font-variant-numeric:tabular-nums}.cycle-section{border-top:1px solid var(--line);margin-top:22px;padding-top:22px}.cycle-head,.cycle-nav,.progress-label,.cycle-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.cycle-head h2{margin:0}.smallbtn{font-size:12px;padding:7px 10px}.cycle-nav{margin:16px 0 14px;color:var(--muted);font-size:12px}.cycle-nav button{width:38px;height:38px;padding:0;font-size:21px}.cycle-card{background:#0e1829;border:1px solid var(--line);border-radius:14px;padding:16px}.cycle-caption,.cycle-countdown{font-size:12px;color:var(--muted)}.cycle-date{font-size:clamp(23px,2.4vw,29px);font-weight:750;color:var(--blue);line-height:1.3;margin:5px 0}.cycle-countdown{margin-top:5px}.progress-track{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:16px}.progress-fill{width:0;height:100%;background:var(--blue);border-radius:20px;transition:width .65s cubic-bezier(.2,.7,.2,1)}.progress-label{font-size:12px;color:var(--muted);margin-top:8px}.progress-label span:last-child{color:var(--text)}.cycle-rows{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}.cycle-row{padding:5px 0;font-size:12px}.cycle-row span:first-child{color:var(--muted)}.cycle-row span:last-child{text-align:right}.cycle-actions{display:grid;grid-template-columns:1.4fr .75fr 1.1fr;gap:7px;margin-top:14px}.cycle-actions button{font-size:12px;padding:10px 6px}.cycle-actions .wide{grid-column:1/-1}.cycle-help{font-size:11px;color:var(--muted);line-height:1.7;margin-top:12px}.cycle-next{font-size:12px;color:var(--muted);margin-top:12px}.cycle-status:empty{display:none}.cycle-status{margin-top:10px}.badge{display:inline-flex;border-radius:20px;padding:3px 9px;background:#122d2b;color:var(--green);font-size:11px}.cycle-history{margin-top:14px}.cycle-history summary{cursor:pointer;font-size:12px;color:var(--muted);padding:8px 0}.history-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:10px;justify-content:space-between}.history-item small{display:block;color:var(--muted);margin-top:3px}.history-item button{font-size:11px;padding:4px 8px;align-self:center}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:#22314a;border:1px solid #3b5277;color:var(--text);padding:12px 18px;border-radius:12px;box-shadow:0 10px 35px #0005;z-index:99;transition:opacity .2s,transform .2s;max-width:calc(100% - 28px);font-size:13px}.toast.visible{opacity:1;transform:translate(-50%,0)}dialog[open]{animation:modalIn .22s ease}dialog::backdrop{animation:backdropIn .2s ease}.field{margin-top:15px}.old-pay{display:none}
-@keyframes panelIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}@keyframes backdropIn{from{opacity:0}to{opacity:1}}@keyframes focusDay{50%{box-shadow:0 0 0 4px #81b3ff66}}@media(max-width:480px){.cycle-date{font-size:25px}.cycle-card{padding:14px 12px}.cycle-actions{grid-template-columns:1fr 1fr}.cycle-actions button:nth-child(3),.cycle-actions .wide{grid-column:1/-1}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-</style></head><body><main class="wrap"><h1>Календарь часов</h1><p class="subtitle">Ваш график, выходные и дата зарплаты</p><div class="layout"><section class="panel"><div class="dates"><div><label for="start">Начальная дата</label><input id="start" type="date" min="1900-01-01" max="9998-12-31"></div><div><label for="end">Конечная дата</label><input id="end" type="date" min="1900-01-01" max="9998-12-31"></div></div><div id="error" class="error" role="alert"></div><div class="nav"><button id="prev" aria-label="Предыдущий месяц">‹</button><strong id="month"></strong><button id="next" aria-label="Следующий месяц">›</button></div><div class="week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div><div id="calendar" class="grid"></div><div class="legend"><span><i class="dot" style="background:#3c6598"></i>Выбранный период</span><span><i class="dot" style="background:#91733e"></i>Свои часы</span><span><i class="dot" style="background:#804457"></i>Выходной</span><span><i class="dot" style="background:#6ce3b7"></i>Зарплата</span></div><div class="hint">Нажмите на день, чтобы изменить часы или отметить выходной. По умолчанию каждый день — 12 часов, включая субботу и воскресенье.</div><div class="actions"><button id="today">Текущий месяц</button><button id="toStart">К начальной дате</button><button id="reset">Сбросить изменения периода</button></div><div id="changes" class="changes"></div></section><section class="panel"><h2>Итоги выбранного периода</h2><div class="stats"><div class="stat main"><span class="caption">Всего рабочих часов</span><div class="value" id="hours">—</div></div><div class="stat"><span class="caption">Рабочих дней</span><div class="value" id="worked">—</div></div><div class="stat"><span class="caption">Выходных</span><div class="value" id="rest">—</div></div></div><div class="detail" id="period"></div><div class="detail" id="customInfo"></div><div class="cycle-section"><div class="cycle-head"><h2>Зарплатный цикл</h2><button id="cycleSettings" class="smallbtn">Настроить</button></div><div class="cycle-nav"><button id="cyclePrev" aria-label="Предыдущий цикл">‹</button><span id="cycleLabel"></span><button id="cycleNext" aria-label="Следующий цикл">›</button></div><div class="cycle-card" aria-live="polite"><div class="cycle-caption">Дата зарплаты</div><div id="cycleDate" class="cycle-date">—</div><div id="cycleCountdown" class="cycle-countdown"></div><div class="progress-track" role="progressbar" aria-label="Прогресс зарплатного цикла" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="cycleProgress"><div id="cycleFill" class="progress-fill"></div></div><div class="progress-label"><span id="cycleProgressText"></span><span id="cyclePercent"></span></div><div class="cycle-rows"><div class="cycle-row"><span>Период цикла</span><span id="cyclePeriod"></span></div><div class="cycle-row"><span>Всего часов за цикл</span><span id="cycleHours"></span></div><div class="cycle-row"><span>Рабочих / выходных</span><span id="cycleDays"></span></div><div class="cycle-row"><span>Авансы за цикл</span><span id="cycleAdvances"></span></div></div><div id="cycleStatus" class="cycle-status"></div></div><div class="cycle-actions"><button id="markPaid" class="primary">Отметить выплату</button><button id="addAdvance">Аванс</button><button id="showCyclePay">На календаре</button><button id="currentCycle" class="wide">Текущий цикл</button></div><div class="cycle-help" id="cycleHelp"></div><div id="cycleUpcoming" class="cycle-next"></div><details class="cycle-history"><summary>История выплат и авансов</summary><div id="paymentHistory"></div></details></div><div class="old-pay"><hr><h2>Когда просить зарплату</h2><label for="mode">Как считать цикл из 30 дней</label><select id="mode"><option value="work">30 рабочих дней — выходные пропускаются</option><option value="calendar">30 календарных дней — перенос с выходного</option></select><div class="detail" id="rule"></div><div class="paybox" aria-live="polite"><span class="caption">Первая дата зарплаты от начальной даты</span><div class="paydate" id="paydate">—</div><div class="detail" id="payinfo"></div></div><div class="detail" id="nextpay"></div><div class="actions"><button id="toPay">Показать дату в календаре</button></div><div class="footer">Обе границы периода включены. День с любым количеством часов больше нуля считается одним рабочим днём, 0 часов — выходным. Расчёт зарплаты может выходить за конечную дату периода: отметьте будущие выходные и часы заранее.</div></div></section></div><div id="saved" class="footer">Данные сохраняются в этом браузере на этом устройстве. Интернет не требуется. Будущие дни без ручных изменений считаются по 12 часов.</div></main>
+
+/* Сохранена исходная тёмно-синяя палитра. */
+button{transition:transform .18s,background .18s,border-color .18s,box-shadow .18s;touch-action:manipulation}
+button:hover:not(:disabled){transform:translateY(-1px)}button:active:not(:disabled){transform:scale(.97)}
+input,select{transition:border-color .2s,box-shadow .2s}.panel{animation:panelIn .4s ease both}.panel:nth-child(2){animation-delay:.06s}
+.value{font-variant-numeric:tabular-nums}.day{overflow:hidden}.day.pay:after{content:'';position:absolute;right:5px;top:5px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+.day.focusday{animation:focusDay 1.1s ease 2}.cycle-section{border-top:1px solid var(--line);margin-top:22px;padding-top:22px}
+.cycle-head,.cycle-nav,.progress-label,.cycle-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cycle-head h2{margin:0}.smallbtn{font-size:12px;padding:7px 10px}.cycle-nav{margin:16px 0 14px;color:var(--muted);font-size:12px}.cycle-nav button{width:38px;height:38px;padding:0;font-size:21px}
+.cycle-card{background:#0e1829;border:1px solid var(--line);border-radius:14px;padding:16px}.cycle-caption,.cycle-countdown{font-size:12px;color:var(--muted)}.cycle-date{font-size:clamp(23px,2.4vw,29px);font-weight:750;color:var(--blue);line-height:1.3;margin:5px 0}.cycle-countdown{margin-top:5px}
+.progress-track{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:16px}.progress-fill{width:0;height:100%;background:var(--blue);border-radius:20px;transition:width .65s cubic-bezier(.2,.7,.2,1)}.progress-label{font-size:12px;color:var(--muted);margin-top:8px}.progress-label span:last-child{color:var(--text)}
+.cycle-rows{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}.cycle-row{padding:5px 0;font-size:12px}.cycle-row span:first-child{color:var(--muted)}.cycle-row span:last-child{text-align:right}
+.cycle-actions{display:grid;grid-template-columns:1.4fr .75fr 1.1fr;gap:7px;margin-top:14px}.cycle-actions button{font-size:12px;padding:10px 6px}.cycle-actions .wide{grid-column:1/-1}
+.cycle-help{font-size:11px;color:var(--muted);line-height:1.7;margin-top:12px}.cycle-next{font-size:12px;color:var(--muted);margin-top:12px}.cycle-status:empty{display:none}.cycle-status{margin-top:10px}.badge{display:inline-flex;border-radius:20px;padding:3px 9px;background:#122d2b;color:var(--green);font-size:11px}
+.cycle-history{margin-top:14px}.cycle-history summary{cursor:pointer;font-size:12px;color:var(--muted);padding:8px 0}.history-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:10px;justify-content:space-between}.history-item small{display:block;color:var(--muted);margin-top:3px}.history-item button{font-size:11px;padding:4px 8px;align-self:center}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:#22314a;border:1px solid #3b5277;color:var(--text);padding:12px 18px;border-radius:12px;box-shadow:0 10px 35px #0005;z-index:99;transition:opacity .2s,transform .2s;max-width:calc(100% - 28px);font-size:13px}.toast.visible{opacity:1;transform:translate(-50%,0)}
+dialog{max-height:calc(100dvh - 28px);overflow:auto}dialog[open]{animation:modalIn .22s ease}dialog::backdrop{animation:backdropIn .2s ease}.field{margin-top:15px}
+@keyframes panelIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}@keyframes backdropIn{from{opacity:0}to{opacity:1}}@keyframes focusDay{50%{box-shadow:0 0 0 4px #81b3ff66}}
+@media(max-width:480px){.cycle-date{font-size:25px}.cycle-card{padding:14px 12px}.cycle-actions{grid-template-columns:1fr 1fr}.cycle-actions button:nth-child(3),.cycle-actions .wide{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body><main class="wrap"><h1>Календарь часов</h1><p class="subtitle">Ваш график, выходные и дата зарплаты</p><div class="layout"><section class="panel"><div class="dates"><div><label for="start">Начальная дата</label><input id="start" type="date" min="1900-01-01" max="9998-12-31"></div><div><label for="end">Конечная дата</label><input id="end" type="date" min="1900-01-01" max="9998-12-31"></div></div><div id="error" class="error" role="alert"></div><div class="nav"><button id="prev" aria-label="Предыдущий месяц">‹</button><strong id="month"></strong><button id="next" aria-label="Следующий месяц">›</button></div><div class="week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div><div id="calendar" class="grid"></div><div class="legend"><span><i class="dot" style="background:#3c6598"></i>Выбранный период</span><span><i class="dot" style="background:#91733e"></i>Свои часы</span><span><i class="dot" style="background:#804457"></i>Выходной</span><span><i class="dot" style="background:#6ce3b7"></i>Зарплата</span></div><div class="hint">Нажмите на день, чтобы изменить часы или отметить выходной. По умолчанию каждый день — 12 часов, включая субботу и воскресенье.</div><div class="actions"><button id="today">Текущий месяц</button><button id="toStart">К начальной дате</button><button id="reset">Сбросить изменения периода</button></div><div id="changes" class="changes"></div></section><section class="panel"><h2>Итоги выбранного периода</h2><div class="stats"><div class="stat main"><span class="caption">Всего рабочих часов</span><div class="value" id="hours">—</div></div><div class="stat"><span class="caption">Рабочих дней</span><div class="value" id="worked">—</div></div><div class="stat"><span class="caption">Выходных</span><div class="value" id="rest">—</div></div></div><div class="detail" id="period"></div><div class="detail" id="customInfo"></div>
+<div class="cycle-section">
+  <div class="cycle-head"><h2>Зарплатный цикл</h2><button id="cycleSettings" class="smallbtn">Настроить</button></div>
+  <div class="cycle-nav"><button id="cyclePrev" aria-label="Предыдущий цикл">‹</button><span id="cycleLabel"></span><button id="cycleNext" aria-label="Следующий цикл">›</button></div>
+  <div class="cycle-card" aria-live="polite">
+    <div class="cycle-caption">Дата зарплаты</div><div id="cycleDate" class="cycle-date">—</div><div id="cycleCountdown" class="cycle-countdown"></div>
+    <div class="progress-track" role="progressbar" aria-label="Прогресс зарплатного цикла" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="cycleProgress"><div id="cycleFill" class="progress-fill"></div></div>
+    <div class="progress-label"><span id="cycleProgressText"></span><span id="cyclePercent"></span></div>
+    <div class="cycle-rows">
+      <div class="cycle-row"><span>Период цикла</span><span id="cyclePeriod"></span></div>
+      <div class="cycle-row"><span>Всего часов за цикл</span><span id="cycleHours"></span></div>
+      <div class="cycle-row"><span>Рабочих / выходных</span><span id="cycleDays"></span></div>
+      <div class="cycle-row"><span>Авансы за цикл</span><span id="cycleAdvances"></span></div>
+    </div><div id="cycleStatus" class="cycle-status"></div>
+  </div>
+  <div class="cycle-actions"><button id="markPaid" class="primary">Отметить выплату</button><button id="addAdvance">Аванс</button><button id="showCyclePay">На календаре</button><button id="currentCycle" class="wide">Текущий цикл</button></div>
+  <div id="cycleHelp" class="cycle-help"></div><div id="cycleUpcoming" class="cycle-next"></div>
+  <details class="cycle-history"><summary>История выплат и авансов</summary><div id="paymentHistory"></div></details>
+</div>
+</section></div><div id="saved" class="footer">Данные сохраняются в этом браузере на этом устройстве. Интернет не требуется. Будущие дни без ручных изменений считаются по 12 часов.</div></main>
 <dialog id="editor" aria-labelledby="editTitle"><form id="editForm"><div class="modalhead"><h2 id="editTitle">Часы за день</h2><button type="button" id="closeEdit" aria-label="Закрыть">×</button></div><div id="editDate" class="muted" style="margin-bottom:18px"></div><label for="dayHours">Сколько часов работали?</label><input id="dayHours" type="number" min="0" max="24" step="0.01" inputmode="decimal" required><div class="quick"><button type="button" data-hours="0">Выходной</button><button type="button" data-hours="9">9 ч</button><button type="button" data-hours="10">10 ч</button><button type="button" data-hours="12">12 ч</button></div><div class="modnote">Можно указать своё значение от 0 до 24 часов, в том числе дробное: например 9,5. Ноль часов означает выходной.</div><div id="editError" class="error" role="alert"></div><div class="modalbuttons"><button type="submit" class="primary">Сохранить</button><button type="button" id="defaultHours">Вернуть 12 часов</button><button type="button" id="cancelEdit">Отмена</button></div></form></dialog>
 
-<dialog id="settingsDialog" aria-labelledby="settingsTitle"><form id="settingsForm"><div class="modalhead"><h2 id="settingsTitle">Настройки цикла</h2><button type="button" data-close="settingsDialog" aria-label="Закрыть">×</button></div><label for="cycleLength">Длина цикла в днях</label><input id="cycleLength" type="number" min="1" max="366" step="1" required><div class="field"><label for="settingsMode">Правило расчёта</label><select id="settingsMode"><option value="work">Рабочие дни · выходные пропускаются</option><option value="calendar">Календарные дни · перенос с выходного</option></select></div><div class="modnote">Первый цикл начинается с начальной даты календаря. При изменении начала, длины или режима создаётся отдельная сетка циклов. История прежних выплат сохраняется.</div><div class="modalbuttons"><button class="primary" type="submit">Сохранить</button><button type="button" data-close="settingsDialog">Отмена</button></div></form></dialog>
-<dialog id="paymentDialog" aria-labelledby="paymentTitle"><form id="paymentForm"><div class="modalhead"><h2 id="paymentTitle">Отметить выплату</h2><button type="button" data-close="paymentDialog" aria-label="Закрыть">×</button></div><div id="paymentContext" class="modnote"></div><div class="field"><label for="paymentDate">Фактическая дата выплаты</label><input id="paymentDate" type="date" min="1900-01-01" max="9998-12-31" required></div><div class="field"><label for="paymentAmount">Сумма · необязательно, в вашей валюте</label><input id="paymentAmount" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" placeholder="Например, 15000"></div><div class="field"><label for="paymentNote">Примечание</label><input id="paymentNote" maxlength="160" placeholder="Необязательно"></div><div class="modnote">Запись в личном журнале не меняет часы и границы циклов и не выполняет перевод денег.</div><div class="modalbuttons"><button class="primary" type="submit">Сохранить запись</button><button type="button" data-close="paymentDialog">Отмена</button></div></form></dialog><div id="toast" class="toast" role="status" aria-live="polite"></div>
+<input id="mode" type="hidden" value="work">
+<dialog id="settingsDialog" aria-labelledby="settingsTitle">
+<form id="settingsForm">
+  <div class="modalhead"><h2 id="settingsTitle">Настройки цикла</h2><button type="button" data-close="settingsDialog" aria-label="Закрыть">×</button></div>
+  <label for="cycleLength">Длина цикла в днях</label><input id="cycleLength" type="number" min="1" max="366" step="1" required>
+  <div class="field"><label for="settingsMode">Правило расчёта</label><select id="settingsMode"><option value="work">Рабочие дни · выходные пропускаются</option><option value="calendar">Календарные дни · перенос с выходного</option></select></div>
+  <div class="modnote">Первый цикл начинается с начальной даты календаря. При изменении начала, длины или режима создаётся отдельная сетка циклов. История прежних выплат сохраняется.</div>
+  <div class="modalbuttons"><button class="primary" type="submit">Сохранить</button><button type="button" data-close="settingsDialog">Отмена</button></div>
+</form></dialog>
+<dialog id="paymentDialog" aria-labelledby="paymentTitle">
+<form id="paymentForm">
+  <div class="modalhead"><h2 id="paymentTitle">Отметить выплату</h2><button type="button" data-close="paymentDialog" aria-label="Закрыть">×</button></div>
+  <div id="paymentContext" class="modnote"></div>
+  <div class="field"><label for="paymentDate">Фактическая дата выплаты</label><input id="paymentDate" type="date" min="1900-01-01" max="9998-12-31" required></div>
+  <div class="field"><label for="paymentAmount">Сумма · необязательно, в вашей валюте</label><input id="paymentAmount" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" placeholder="Например, 15000"></div>
+  <div class="field"><label for="paymentNote">Примечание</label><input id="paymentNote" maxlength="160" placeholder="Необязательно"></div>
+  <div class="modnote">Запись в личном журнале не меняет часы и границы циклов и не выполняет перевод денег.</div>
+  <div class="modalbuttons"><button class="primary" type="submit">Сохранить запись</button><button type="button" data-close="paymentDialog">Отмена</button></div>
+</form></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
 <script>
+
 'use strict';
-const $=id=>document.getElementById(id),KEY='driver-hours-calendar-v1',DAY=86400000;
-function parse(s){if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return NaN;const [y,m,d]=s.split('-').map(Number),n=Date.UTC(y,m-1,d);return Number.isFinite(n)&&new Date(n).toISOString().slice(0,10)===s?n:NaN}
-const key=n=>new Date(n).toISOString().slice(0,10),fmt=n=>new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(n)),num=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(n);
-const now=new Date(),todayKey=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
-let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
-let overrides={};if(saved.hours&&typeof saved.hours==='object'&&!Array.isArray(saved.hours)){for(const [s,h]of Object.entries(saved.hours)){if(Number.isFinite(parse(s))&&typeof h==='number'&&h>=0&&h<=24&&h!==12)overrides[s]=Math.round(h*100)/100}}else if(Array.isArray(saved.off)){for(const s of saved.off)if(Number.isFinite(parse(s)))overrides[s]=0}
-$('start').value=Number.isFinite(parse(saved.start))?saved.start:todayKey;$('end').value=Number.isFinite(parse(saved.end))?saved.end:key(Date.UTC(now.getFullYear(),now.getMonth()+1,0));$('mode').value=saved.mode==='calendar'?'calendar':'work';
-let v=new Date(parse($('start').value)),viewY=v.getUTCFullYear(),viewM=v.getUTCMonth(),payDates=[],editKey=null;
-const hoursFor=s=>Object.hasOwn(overrides,s)?overrides[s]:12;
-
-const EXTRA_KEY='driver-hours-calendar-ui-v2';
-let extra={};try{extra=JSON.parse(localStorage.getItem(EXTRA_KEY)||'{}')||{}}catch(e){}
-let cycleLength=Number.isInteger(extra.length)&&extra.length>=1&&extra.length<=366?extra.length:30;
-let payments=Array.isArray(extra.payments)?extra.payments.filter(p=>p&&typeof p.id==='string'&&typeof p.group==='string'&&Number.isInteger(p.index)&&p.index>=0&&['salary','advance'].includes(p.kind)&&Number.isFinite(parse(p.date))&&(p.amount===null||(Number.isFinite(p.amount)&&p.amount>=0))&&typeof p.note==='string').slice(-2000):[];
-let cycleIndex=0,activeCycle=null,paymentKind='salary',paymentTarget=null,toastTimer;
-const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),3000)}
-function saveExtra(){try{localStorage.setItem(EXTRA_KEY,JSON.stringify({length:cycleLength,payments}))}catch(e){toast('Не удалось сохранить данные в браузере')}}
-function animateElement(el,direction=1){if(!reduced()&&el.animate)el.animate([{opacity:.35,transform:'translateX('+direction*10+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:240,easing:'ease-out'})}
-
-function persist(){try{localStorage.setItem(KEY,JSON.stringify({start:$('start').value,end:$('end').value,mode:$('mode').value,hours:overrides,off:Object.keys(overrides).filter(s=>overrides[s]===0)}))}catch(e){$('saved').textContent='Браузер запретил сохранение: расчёт работает, но изменения могут исчезнуть после закрытия страницы.'}}
-function entriesIn(a,b){return Object.entries(overrides).filter(([s])=>{const n=parse(s);return n>=a&&n<=b})}
-function total(a,b){const days=Math.round((b-a)/DAY)+1,entries=entriesIn(a,b);let hours=days*12,rest=0,custom=0;for(const [s,h]of entries){hours+=h-12;if(h===0)rest++;else custom++}return{days,hours:Math.round(hours*100)/100,rest,worked:days-rest,custom}}
-function workingDue(a,count){let n=a+(count-1)*DAY;for(let i=0;i<=Object.keys(overrides).length+1;i++){const r=entriesIn(a,n).filter(([,h])=>h===0).length,next=a+(count+r-1)*DAY;if(next===n)return n;n=next}return n}
-function calendarDue(a,cycle){let n=a+cycle*cycleLength*DAY;while(hoursFor(key(n))===0)n+=DAY;return n}
-function setView(n){const d=new Date(n);viewY=d.getUTCFullYear();viewM=d.getUTCMonth();renderCalendar()}
-function renderCalendar(){const first=Date.UTC(viewY,viewM,1),count=new Date(Date.UTC(viewY,viewM+1,0)).getUTCDate(),offset=(new Date(first).getUTCDay()+6)%7,a=parse($('start').value),b=parse($('end').value);$('month').textContent=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(first));const grid=$('calendar');grid.replaceChildren();for(let i=0;i<offset;i++)grid.appendChild(document.createElement('span'));for(let d=1;d<=count;d++){const n=Date.UTC(viewY,viewM,d),s=key(n),h=hoursFor(s),btn=document.createElement('button');btn.type='button';btn.className='day'+(n>=a&&n<=b?' range':'')+(h===0?' off':h!==12?' custom':'')+(payDates.includes(n)?' pay':'')+(s===todayKey?' today':'');const top=document.createElement('span');top.className='num';top.textContent=d;const sub=document.createElement('small');sub.textContent=h===0?'выходной':num(h)+' ч';btn.append(top,sub);btn.setAttribute('aria-label',fmt(n)+', '+(h===0?'выходной':num(h)+' часов')+'. Изменить');btn.onclick=()=>openEditor(s);grid.appendChild(btn)}$('prev').disabled=viewY<=1900&&viewM===0;$('next').disabled=viewY>=9998&&viewM===11}
-function syncQuick(){const h=$('dayHours').value===''?NaN:Number($('dayHours').value);document.querySelectorAll('[data-hours]').forEach(b=>{const active=Number(b.dataset.hours)===h;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))})}
-function openEditor(s){editKey=s;$('editDate').textContent=fmt(parse(s));$('dayHours').value=hoursFor(s);$('editError').textContent='';syncQuick();$('editor').showModal();$('dayHours').focus();$('dayHours').select()}
-function closeEditor(){$('editor').close();editKey=null}
-$('editForm').addEventListener('submit',e=>{e.preventDefault();const raw=$('dayHours').value,h=Number(raw);if(raw===''||!Number.isFinite(h)||h<0||h>24){$('editError').textContent='Укажите число от 0 до 24.';return}const rounded=Math.round(h*100)/100;if(rounded===12)delete overrides[editKey];else overrides[editKey]=rounded;closeEditor();update();toast('Часы за день сохранены')});
-$('defaultHours').onclick=()=>{if(editKey)delete overrides[editKey];closeEditor();update()};$('closeEdit').onclick=closeEditor;$('cancelEdit').onclick=closeEditor;$('editor').addEventListener('cancel',()=>{editKey=null});$('dayHours').oninput=syncQuick;document.querySelectorAll('[data-hours]').forEach(b=>b.onclick=()=>{$('dayHours').value=b.dataset.hours;syncQuick()});
-function baseUpdate(){persist();const a=parse($('start').value),b=parse($('end').value),valid=Number.isFinite(a)&&Number.isFinite(b)&&a<=b&&a>=Date.UTC(1900,0,1)&&b<=Date.UTC(9998,11,31);$('error').textContent=valid?'':'Укажите корректные даты: конечная дата должна быть не раньше начальной.';payDates=[];$('toPay').disabled=!valid;$('reset').disabled=!valid;
-if(valid){const t=total(a,b);$('hours').textContent=num(t.hours)+' ч';$('worked').textContent=num(t.worked);$('rest').textContent=num(t.rest);$('period').textContent=fmt(a)+' — '+fmt(b)+' · '+num(t.days)+' календарных дней.';$('customInfo').textContent=t.custom?'Дней с индивидуальными часами: '+t.custom+'. Все значения учтены в общей сумме.':'Рабочие дни без изменений считаются по 12 часов.';
-const work=$('mode').value==='work';payDates=[1,2,3].map(i=>work?workingDue(a,i*cycleLength):calendarDue(a,i));$('rule').textContent=work?'Зарплата — в конце 30-го рабочего дня. Начальная дата считается первым днём, если в ней больше 0 часов. Выходные пропускаются; короткий день считается одним рабочим днём.':'Первый срок — через 30 календарных дней от начальной даты. Если это отмеченный выходной, переносим на следующий рабочий день. Следующие сроки считаются от исходной даты.';$('paydate').textContent=fmt(payDates[0]);const p=total(a,payDates[0]);$('payinfo').textContent='К этой дате: '+num(p.hours)+' ч · '+p.worked+' рабочих дней · '+p.rest+' выходных. Индивидуальные часы учтены.';$('nextpay').textContent='Следующие даты: '+fmt(payDates[1])+' и '+fmt(payDates[2])+'.';
-}else{['hours','worked','rest','paydate'].forEach(id=>$(id).textContent='—');['period','customInfo','rule','payinfo','nextpay'].forEach(id=>$(id).textContent='')}
-const list=$('changes');list.replaceChildren();if(valid){const entries=entriesIn(a,b).sort(([a],[b])=>a.localeCompare(b));if(entries.length){const heading=document.createElement('div');heading.className='caption';heading.textContent='Изменения в выбранном периоде';list.appendChild(heading);for(const [s,h]of entries){const row=document.createElement('div');row.className='change';const label=document.createElement('span');label.textContent=s.split('-').reverse().join('.')+' — '+(h===0?'выходной':num(h)+' ч');const button=document.createElement('button');button.textContent='Изменить';button.onclick=()=>openEditor(s);row.append(label,button);list.appendChild(row)}}}renderCalendar()}
-$('start').onchange=()=>{const n=parse($('start').value);if(Number.isFinite(n))setView(n);update()};$('end').onchange=update;$('mode').onchange=update;$('prev').onclick=()=>{if(--viewM<0){viewM=11;viewY--}renderCalendar()};$('next').onclick=()=>{if(++viewM>11){viewM=0;viewY++}renderCalendar()};$('today').onclick=()=>setView(parse(todayKey));$('toStart').onclick=()=>{const n=parse($('start').value);if(Number.isFinite(n))setView(n)};$('toPay').onclick=()=>{if(payDates.length)setView(payDates[0])};$('reset').onclick=()=>{const a=parse($('start').value),b=parse($('end').value),entries=entriesIn(a,b);if(entries.length&&confirm('Сбросить часы и выходные выбранного периода? Все эти дни станут рабочими по 12 часов.')){for(const [s]of entries)delete overrides[s];update()}};
-function cycleGroup(){return $('start').value+'|'+$('mode').value+'|'+cycleLength}
-function dueAt(index){const a=parse($('start').value);return $('mode').value==='work'?workingDue(a,(index+1)*cycleLength):calendarDue(a,index+1)}
-function cycleAt(index){const a=parse($('start').value);return{start:index===0?a:dueAt(index-1)+DAY,end:dueAt(index),index,group:cycleGroup()}}
-function findCurrentCycle(){const a=parse($('start').value),t=parse(todayKey);if(!Number.isFinite(a)||t<a)return 0;let i=$('mode').value==='work'?Math.floor(total(a,t).worked/cycleLength):Math.floor((t-a)/DAY/cycleLength);i=Math.max(0,i);while(i>0&&dueAt(i-1)>=t)i--;while(dueAt(i)<t)i++;return i}
-function shortDate(n){return new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(n)).replace(/\.$/,'')}
-function cycleRecords(c){return payments.filter(p=>p.group===c.group&&p.index===c.index)}
-function renderHistory(){const root=$('paymentHistory');root.replaceChildren();if(!payments.length){root.textContent='Записей пока нет.';root.className='detail';return}root.className='';for(const p of [...payments].reverse()){const row=document.createElement('div');row.className='history-item';const text=document.createElement('div');text.textContent=(p.kind==='salary'?'Зарплата':'Аванс')+' · '+fmt(parse(p.date))+(p.amount!==null?' · '+num(p.amount):'');const detail=document.createElement('small');detail.textContent='Цикл №'+(p.index+1)+' · начало '+p.group.split('|')[0]+(p.note?' · '+p.note:'');text.append(detail);const del=document.createElement('button');del.textContent='Удалить';del.type='button';del.onclick=()=>{if(confirm('Удалить эту запись из истории?')){payments=payments.filter(x=>x.id!==p.id);saveExtra();update();toast('Запись удалена')}};row.append(text,del);root.append(row)}}
-function renderCycle(){const a=parse($('start').value),b=parse($('end').value),valid=Number.isFinite(a)&&Number.isFinite(b)&&a<=b;
-for(const id of ['cyclePrev','cycleNext','markPaid','addAdvance','showCyclePay','currentCycle'])$(id).disabled=!valid;
-if(!valid){activeCycle=null;for(const id of ['cycleDate','cycleLabel','cycleCountdown','cyclePeriod','cycleHours','cycleDays','cycleAdvances','cycleProgressText','cyclePercent','cycleUpcoming','cycleStatus'])$(id).textContent='—';$('cycleFill').style.width='0%';$('cycleProgress').setAttribute('aria-valuenow','0');renderHistory();return}
-const c=cycleAt(cycleIndex);activeCycle=c;const t=total(c.start,c.end),today=parse(todayKey),work=$('mode').value==='work';const elapsedEnd=Math.min(c.end,today-DAY),elapsed=elapsedEnd<c.start?null:total(c.start,elapsedEnd);const passed=elapsed?(work?elapsed.worked:elapsed.days):0,target=work?cycleLength:Math.round((c.end-c.start)/DAY)+1,percent=Math.min(100,Math.round(passed/target*100));
-$('cycleLabel').textContent='Цикл №'+(cycleIndex+1)+' · '+cycleLength+(work?' рабочих':' календарных');$('cycleDate').textContent=fmt(c.end);const remaining=Math.max(0,target-passed);$('cycleCountdown').textContent=today>c.end?'Расчётная дата уже прошла':today===c.end?'Сегодня — день выплаты':today<c.start?'Цикл ещё не начался':'До даты: '+remaining+(work?' рабочих дней':' календарных дней')+', включая день выплаты';
-$('cycleProgressText').textContent='Завершено '+passed+' из '+target+(work?' рабочих дней':' дней');$('cyclePercent').textContent=percent+'%';$('cycleFill').style.width=percent+'%';$('cycleProgress').setAttribute('aria-valuenow',String(percent));$('cyclePeriod').textContent=shortDate(c.start)+' — '+shortDate(c.end)+(new Date(c.start).getUTCFullYear()!==new Date(c.end).getUTCFullYear()?' '+new Date(c.end).getUTCFullYear():'');
-$('cycleHours').textContent=num(t.hours)+' ч';$('cycleDays').textContent=t.worked+' / '+t.rest;
-const records=cycleRecords(c),advances=records.filter(p=>p.kind==='advance'),paid=records.find(p=>p.kind==='salary');$('cycleAdvances').textContent=advances.length?num(advances.reduce((sum,p)=>sum+(p.amount||0),0))+' · записей: '+advances.length:'Нет';$('cycleStatus').replaceChildren();if(paid){const badge=document.createElement('span');badge.className='badge';badge.textContent='✓ Выплачено · '+shortDate(parse(paid.date))+(paid.amount!==null?' · '+num(paid.amount):'');$('cycleStatus').append(badge)}$('markPaid').disabled=!!paid;$('markPaid').textContent=paid?'Выплата отмечена':'Отметить выплату';$('cyclePrev').disabled=cycleIndex===0;$('cycleNext').disabled=dueAt(cycleIndex+3)>Date.UTC(9998,11,31);
-$('cycleHelp').textContent=(work?'Любой день с часами > 0 считается одним рабочим. Выходные пропускаются. Короткая смена меняет сумму часов, но не длину цикла.':'Сроки считаются от начальной даты через каждые '+cycleLength+' дней. Дата на выходном переносится на следующий рабочий день.')+' Часы считаются автоматически: 12 ч по умолчанию, с учётом ваших изменений. Прогресс — по завершённым дням, без сегодняшнего.';
-$('cycleUpcoming').textContent='Следующие даты: '+shortDate(dueAt(cycleIndex+1))+' и '+shortDate(dueAt(cycleIndex+2))+'.';payDates=[c.end,dueAt(cycleIndex+1),dueAt(cycleIndex+2)];renderCalendar();renderHistory()}
-function update(){baseUpdate();renderCycle()}
-$('cyclePrev').onclick=()=>{cycleIndex=Math.max(0,cycleIndex-1);renderCycle();animateElement($('cycleDate'),-1)};
-$('cycleNext').onclick=()=>{cycleIndex++;renderCycle();animateElement($('cycleDate'),1)};
-$('currentCycle').onclick=()=>{cycleIndex=findCurrentCycle();renderCycle();animateElement($('cycleDate'));toast('Открыт текущий цикл')};
-$('showCyclePay').onclick=()=>{if(!activeCycle)return;setView(activeCycle.end);const target=[...$('calendar').children].find(el=>el.classList.contains('pay'));if(target){target.classList.add('focusday');target.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'})}};
+const $ = id => document.getElementById(id);
+const KEY = 'driver-hours-calendar-v1';
+const EXTRA_KEY = 'driver-hours-calendar-ui-v2';
+const DAY = 86400000;
+const MIN = Date.UTC(1900, 0, 1), MAX = Date.UTC(9998, 11, 31);
+function parse(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return NaN;
+  const [y,m,d] = value.split('-').map(Number), n = Date.UTC(y,m-1,d);
+  return n >= MIN && n <= MAX && new Date(n).toISOString().slice(0,10) === value ? n : NaN;
+}
+const key = n => new Date(n).toISOString().slice(0,10);
+const fmt = n => Number.isFinite(n) ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(n)) : '—';
+const shortDate = n => Number.isFinite(n) ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short',timeZone:'UTC'}).format(new Date(n)).replace(/\.$/,'') : '—';
+const num = n => new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(n);
+const now = new Date();
+const todayKey = [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+const todayN = parse(todayKey);
+function load(storageKey) {try {const x = JSON.parse(localStorage.getItem(storageKey)||'{}');return x && typeof x === 'object' ? x : {}} catch {return {}}}
+const saved = load(KEY), extra = load(EXTRA_KEY);
+let overrides = {};
+if (saved.hours && typeof saved.hours === 'object' && !Array.isArray(saved.hours)) {
+  for (const [date,h] of Object.entries(saved.hours)) {
+    if (Number.isFinite(parse(date)) && typeof h === 'number' && Number.isFinite(h) && h >= 0 && h <= 24) {
+      const rounded = Math.round(h*100)/100;
+      if (rounded !== 12) overrides[date] = rounded;
+    }
+  }
+} else if (Array.isArray(saved.off)) {
+  for (const date of saved.off) if (Number.isFinite(parse(date))) overrides[date] = 0;
+}
+let cycleLength = Number.isInteger(extra.length) && extra.length >= 1 && extra.length <= 366 ? extra.length : 30;
+let payments = Array.isArray(extra.payments) ? extra.payments.filter(p => p && typeof p.id === 'string' && typeof p.group === 'string' && Number.isInteger(p.index) && p.index >= 0 && ['salary','advance'].includes(p.kind) && Number.isFinite(parse(p.date)) && (p.amount === null || (Number.isFinite(p.amount) && p.amount >= 0)) && typeof p.note === 'string') : [];
+$('start').value = Number.isFinite(parse(saved.start)) ? saved.start : todayKey;
+$('end').value = Number.isFinite(parse(saved.end)) ? saved.end : key(Date.UTC(now.getFullYear(),now.getMonth()+1,0));
+$('mode').value = saved.mode === 'calendar' ? 'calendar' : 'work';
+let viewDate = new Date(parse($('start').value));
+let viewY = viewDate.getUTCFullYear(), viewM = viewDate.getUTCMonth();
+let cycleIndex = 0, activeCycle = null, payDates = [], editKey = null;
+let paymentKind = 'salary', paymentTarget = null, toastTimer;
+const hoursFor = date => Object.hasOwn(overrides,date) ? overrides[date] : 12;
+const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('visible'), 3000);
+}
+function persist() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({start:$('start').value,end:$('end').value,mode:$('mode').value,hours:overrides,off:Object.keys(overrides).filter(k=>overrides[k]===0)}));
+    localStorage.setItem(EXTRA_KEY, JSON.stringify({length:cycleLength,payments}));
+  } catch {
+    $('saved').textContent = 'Браузер запретил сохранение. Расчёт работает, но изменения могут исчезнуть после закрытия страницы.';
+  }
+}
+function entriesIn(a,b) {return Object.entries(overrides).filter(([date])=>{const n=parse(date);return n>=a&&n<=b})}
+function total(a,b) {
+  if (b<a) return {days:0,hours:0,rest:0,worked:0,custom:0};
+  const days = Math.round((b-a)/DAY)+1;
+  let hours = days*12, rest=0, custom=0;
+  for (const [,h] of entriesIn(a,b)) {hours+=h-12;if(h===0)rest++;else custom++}
+  return {days,hours:Math.round(hours*100)/100,rest,worked:days-rest,custom};
+}
+function workingDue(a,count) {
+  let due = a+(count-1)*DAY;
+  for (let i=0;i<=Object.keys(overrides).length+1;i++) {
+    const off=entriesIn(a,due).filter(([,h])=>h===0).length;
+    const next=a+(count+off-1)*DAY;
+    if (next===due) break;
+    due=next;
+  }
+  return due<=MAX ? due : NaN;
+}
+function calendarDue(a,cycle) {
+  let due=a+cycle*cycleLength*DAY;
+  while (due<=MAX && hoursFor(key(due))===0) due+=DAY;
+  return due<=MAX ? due : NaN;
+}
+function dueAt(index) {const a=parse($('start').value);return $('mode').value==='work'?workingDue(a,(index+1)*cycleLength):calendarDue(a,index+1)}
+function cycleGroup() {return $('start').value+'|'+$('mode').value+'|'+cycleLength}
+function cycleAt(index) {return {start:index===0?parse($('start').value):dueAt(index-1)+DAY,end:dueAt(index),index,group:cycleGroup()}}
+function validPeriod() {const a=parse($('start').value),b=parse($('end').value);return Number.isFinite(a)&&Number.isFinite(b)&&a<=b}
+function findCurrentCycle() {
+  const a=parse($('start').value);
+  if (!Number.isFinite(a)||todayN<a) return 0;
+  let index=$('mode').value==='work'?Math.floor(total(a,todayN).worked/cycleLength):Math.floor((todayN-a)/DAY/cycleLength);
+  index=Math.max(0,index);
+  while (index>0 && dueAt(index-1)>=todayN) index--;
+  while (Number.isFinite(dueAt(index)) && dueAt(index)<todayN) index++;
+  return index;
+}
+function animateElement(el,direction=1) {
+  if (!reduced() && el.animate) el.animate([{opacity:.35,transform:'translateX('+direction*10+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:240,easing:'ease-out'});
+}
+function setView(n,animate=true) {
+  if (!Number.isFinite(n)||n<MIN||n>MAX) return;
+  const date=new Date(n);viewY=date.getUTCFullYear();viewM=date.getUTCMonth();
+  renderCalendar();if(animate)animateElement($('calendar'));
+}
+function renderCalendar() {
+  const first=Date.UTC(viewY,viewM,1),count=new Date(Date.UTC(viewY,viewM+1,0)).getUTCDate();
+  const offset=(new Date(first).getUTCDay()+6)%7,a=parse($('start').value),b=parse($('end').value);
+  $('month').textContent=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(first));
+  const grid=$('calendar');grid.replaceChildren();
+  for(let i=0;i<offset;i++)grid.appendChild(document.createElement('span'));
+  for(let d=1;d<=count;d++) {
+    const n=Date.UTC(viewY,viewM,d),date=key(n),h=hoursFor(date),btn=document.createElement('button');
+    btn.type='button';btn.dataset.date=date;
+    btn.className='day'+(n>=a&&n<=b?' range':'')+(h===0?' off':h!==12?' custom':'')+(payDates.includes(n)?' pay':'')+(date===todayKey?' today':'');
+    const top=document.createElement('span');top.className='num';top.textContent=d;
+    const sub=document.createElement('small');sub.textContent=h===0?'выходной':num(h)+' ч';
+    btn.append(top,sub);btn.setAttribute('aria-label',fmt(n)+', '+(h===0?'выходной':num(h)+' часов')+'. Изменить');
+    btn.onclick=()=>openEditor(date);grid.appendChild(btn);
+  }
+  $('prev').disabled=viewY<=1900&&viewM===0;$('next').disabled=viewY>=9998&&viewM===11;
+}
+function syncQuick() {
+  const h=$('dayHours').value===''?NaN:Number($('dayHours').value);
+  document.querySelectorAll('[data-hours]').forEach(button=>{const active=Number(button.dataset.hours)===h;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
+}
+function openEditor(date) {
+  editKey=date;$('editDate').textContent=fmt(parse(date));$('dayHours').value=hoursFor(date);$('editError').textContent='';
+  syncQuick();$('editor').showModal();$('dayHours').focus();$('dayHours').select();
+}
+function closeEditor() {$('editor').close();editKey=null}
+$('editForm').addEventListener('submit',event=>{
+  event.preventDefault();const raw=$('dayHours').value,h=Number(raw);
+  if(!editKey)return;
+  if(raw===''||!Number.isFinite(h)||h<0||h>24){$('editError').textContent='Укажите число от 0 до 24.';return}
+  const rounded=Math.round(h*100)/100;
+  if(rounded===12)delete overrides[editKey];else overrides[editKey]=rounded;
+  closeEditor();update();toast('Часы за день сохранены');
+});
+$('defaultHours').onclick=()=>{if(editKey)delete overrides[editKey];closeEditor();update();toast('Возвращено 12 часов')};
+$('closeEdit').onclick=closeEditor;$('cancelEdit').onclick=closeEditor;
+$('editor').addEventListener('close',()=>{editKey=null});
+$('editor').addEventListener('cancel',()=>{editKey=null});
+$('dayHours').oninput=syncQuick;
+document.querySelectorAll('[data-hours]').forEach(button=>button.onclick=()=>{$('dayHours').value=button.dataset.hours;syncQuick()});
+function renderChanges() {
+  const list=$('changes');list.replaceChildren();if(!validPeriod())return;
+  const entries=entriesIn(parse($('start').value),parse($('end').value)).sort(([a],[b])=>a.localeCompare(b));
+  if(!entries.length)return;
+  const heading=document.createElement('div');heading.className='caption';heading.textContent='Изменения в выбранном периоде';list.appendChild(heading);
+  for(const [date,h] of entries) {
+    const row=document.createElement('div');row.className='change';
+    const label=document.createElement('span');label.textContent=date.split('-').reverse().join('.')+' — '+(h===0?'выходной':num(h)+' ч');
+    const button=document.createElement('button');button.textContent='Изменить';button.onclick=()=>openEditor(date);
+    row.append(label,button);list.appendChild(row);
+  }
+}
+function cycleRecords(c) {return payments.filter(p=>p.group===c.group&&p.index===c.index)}
+function renderHistory() {
+  const root=$('paymentHistory');root.replaceChildren();
+  if(!payments.length){root.textContent='Записей пока нет.';root.className='detail';return}
+  root.className='';
+  for(const p of [...payments].reverse()) {
+    const row=document.createElement('div');row.className='history-item';
+    const text=document.createElement('div');text.textContent=(p.kind==='salary'?'Зарплата':'Аванс')+' · '+fmt(parse(p.date))+(p.amount!==null?' · '+num(p.amount):'');
+    const detail=document.createElement('small');detail.textContent='Цикл №'+(p.index+1)+' · начало '+p.group.split('|')[0]+(p.note?' · '+p.note:'');text.append(detail);
+    const del=document.createElement('button');del.type='button';del.textContent='Удалить';
+    del.onclick=()=>{if(confirm('Удалить эту запись из истории?')){payments=payments.filter(x=>x.id!==p.id);update();toast('Запись удалена')}};
+    row.append(text,del);root.append(row);
+  }
+}
+function renderCycle() {
+  const valid=validPeriod();activeCycle=null;payDates=[];
+  for(const id of ['cyclePrev','cycleNext','markPaid','addAdvance','showCyclePay','currentCycle'])$(id).disabled=!valid;
+  const c=valid?cycleAt(cycleIndex):null;
+  if(!c||!Number.isFinite(c.start)||!Number.isFinite(c.end)) {
+    for(const id of ['cycleDate','cycleLabel','cycleCountdown','cyclePeriod','cycleHours','cycleDays','cycleAdvances','cycleProgressText','cyclePercent','cycleUpcoming','cycleStatus'])$(id).textContent='—';
+    $('cycleFill').style.width='0%';$('cycleProgress').setAttribute('aria-valuenow','0');
+    $('cycleHelp').textContent=valid?'Дата выплаты выходит за допустимый диапазон дат.':'Укажите корректный период.';
+    for(const id of ['markPaid','addAdvance','showCyclePay','cycleNext'])$(id).disabled=true;
+    $('cyclePrev').disabled=!valid||cycleIndex===0;return;
+  }
+  activeCycle=c;const t=total(c.start,c.end),work=$('mode').value==='work';
+  const elapsed=total(c.start,Math.min(c.end,todayN-DAY));
+  const passed=work?elapsed.worked:elapsed.days,target=work?cycleLength:t.days;
+  const percent=target>0?Math.min(100,Math.round(passed/target*100)):100;
+  $('cycleLabel').textContent='Цикл №'+(cycleIndex+1)+' · '+cycleLength+(work?' рабочих':' календарных');
+  $('cycleDate').textContent=fmt(c.end);
+  $('cycleCountdown').textContent=todayN>c.end?'Расчётная дата уже прошла':todayN===c.end?'Сегодня — день выплаты':todayN<c.start?'Цикл ещё не начался':'До даты: '+Math.max(0,target-passed)+(work?' рабочих дней':' календарных дней')+', включая день выплаты';
+  $('cycleProgressText').textContent='Завершено '+passed+' из '+target+(work?' рабочих дней':' дней');
+  $('cyclePercent').textContent=percent+'%';$('cycleFill').style.width=percent+'%';$('cycleProgress').setAttribute('aria-valuenow',String(percent));
+  $('cyclePeriod').textContent=shortDate(c.start)+' — '+shortDate(c.end)+(new Date(c.start).getUTCFullYear()!==new Date(c.end).getUTCFullYear()?' '+new Date(c.end).getUTCFullYear():'');
+  $('cycleHours').textContent=num(t.hours)+' ч';$('cycleDays').textContent=t.worked+' / '+t.rest;
+  const records=cycleRecords(c),advances=records.filter(p=>p.kind==='advance'),paid=records.find(p=>p.kind==='salary');
+  $('cycleAdvances').textContent=advances.length?num(advances.reduce((sum,p)=>sum+(p.amount||0),0))+' · записей: '+advances.length:'Нет';
+  $('cycleStatus').replaceChildren();
+  if(paid){const badge=document.createElement('span');badge.className='badge';badge.textContent='✓ Выплачено · '+shortDate(parse(paid.date))+(paid.amount!==null?' · '+num(paid.amount):'');$('cycleStatus').append(badge)}
+  $('markPaid').disabled=!!paid;$('markPaid').textContent=paid?'Выплата отмечена':'Отметить выплату';
+  $('cyclePrev').disabled=cycleIndex===0;$('cycleNext').disabled=!Number.isFinite(dueAt(cycleIndex+1));
+  $('cycleHelp').textContent=(work?'Любой день с часами > 0 считается одним рабочим. Выходные пропускаются. Короткая смена меняет сумму часов, но не длину цикла.':'Сроки считаются от начальной даты через каждые '+cycleLength+' дней. Дата на выходном переносится на следующий рабочий день.')+' Часы считаются автоматически: 12 ч по умолчанию, с учётом ваших изменений. Прогресс — по завершённым дням, без сегодняшнего.';
+  const upcoming=[dueAt(cycleIndex+1),dueAt(cycleIndex+2)].filter(Number.isFinite);
+  $('cycleUpcoming').textContent=upcoming.length?'Следующие даты: '+upcoming.map(shortDate).join(' и ')+'.':'Следующие даты вне допустимого диапазона.';
+  payDates=[c.end,...upcoming];
+}
+function update() {
+  persist();const valid=validPeriod(),a=parse($('start').value),b=parse($('end').value);
+  $('error').textContent=valid?'':'Укажите корректные даты: конечная дата должна быть не раньше начальной.';
+  $('reset').disabled=!valid;$('toStart').disabled=!Number.isFinite(a);
+  if(valid) {
+    const t=total(a,b);$('hours').textContent=num(t.hours)+' ч';$('worked').textContent=num(t.worked);$('rest').textContent=num(t.rest);
+    $('period').textContent=fmt(a)+' — '+fmt(b)+' · '+num(t.days)+' календарных дней.';
+    $('customInfo').textContent=t.custom?'Дней с индивидуальными часами: '+t.custom+'. Все значения учтены в общей сумме.':'Рабочие дни без изменений считаются по 12 часов.';
+  } else {
+    for(const id of ['hours','worked','rest'])$(id).textContent='—';
+    $('period').textContent='';$('customInfo').textContent='';
+  }
+  renderChanges();renderCycle();renderHistory();renderCalendar();
+}
+$('start').onchange=()=>{cycleIndex=findCurrentCycle();const a=parse($('start').value);if(Number.isFinite(a))setView(a,false);update()};
+$('end').onchange=update;
+$('prev').onclick=()=>{if($('prev').disabled)return;if(--viewM<0){viewM=11;viewY--}renderCalendar();animateElement($('calendar'),-1)};
+$('next').onclick=()=>{if($('next').disabled)return;if(++viewM>11){viewM=0;viewY++}renderCalendar();animateElement($('calendar'),1)};
+$('today').onclick=()=>setView(todayN);$('toStart').onclick=()=>setView(parse($('start').value));
+$('reset').onclick=()=>{
+  if(!validPeriod())return;
+  const entries=entriesIn(parse($('start').value),parse($('end').value));
+  if(entries.length&&confirm('Сбросить часы и выходные выбранного периода? Все эти дни станут рабочими по 12 часов.')){for(const [date]of entries)delete overrides[date];update();toast('Изменения периода сброшены')}
+};
+$('cyclePrev').onclick=()=>{if(cycleIndex>0){cycleIndex--;renderCycle();renderCalendar();animateElement($('cycleDate'),-1)}};
+$('cycleNext').onclick=()=>{if(!$('cycleNext').disabled){cycleIndex++;renderCycle();renderCalendar();animateElement($('cycleDate'),1)}};
+$('currentCycle').onclick=()=>{cycleIndex=findCurrentCycle();renderCycle();renderCalendar();animateElement($('cycleDate'));toast('Открыт текущий цикл')};
+$('showCyclePay').onclick=()=>{
+  if(!activeCycle)return;
+  setView(activeCycle.end);
+  const target=[...$('calendar').children].find(el=>el.dataset.date===key(activeCycle.end));
+  if(target){target.classList.add('focusday');target.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'})}
+};
 $('cycleSettings').onclick=()=>{$('cycleLength').value=cycleLength;$('settingsMode').value=$('mode').value;$('settingsDialog').showModal()};
-$('settingsForm').onsubmit=e=>{e.preventDefault();const length=Number($('cycleLength').value);if(!Number.isInteger(length)||length<1||length>366)return;cycleLength=length;$('mode').value=$('settingsMode').value;cycleIndex=findCurrentCycle();saveExtra();$('settingsDialog').close();update();toast('Настройки цикла сохранены')};
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
-function openPayment(kind){if(!activeCycle)return;paymentKind=kind;paymentTarget={...activeCycle};$('paymentTitle').textContent=kind==='salary'?'Отметить выплату':'Добавить аванс';$('paymentContext').textContent='Цикл №'+(activeCycle.index+1)+' · '+fmt(activeCycle.start)+' — '+fmt(activeCycle.end);$('paymentDate').value=todayKey;$('paymentAmount').value='';$('paymentNote').value='';$('paymentDialog').showModal()}
+$('settingsForm').onsubmit=event=>{
+  event.preventDefault();const length=Number($('cycleLength').value);
+  if(!Number.isInteger(length)||length<1||length>366)return;
+  cycleLength=length;$('mode').value=$('settingsMode').value;cycleIndex=findCurrentCycle();
+  $('settingsDialog').close();update();toast('Настройки цикла сохранены');
+};
+document.querySelectorAll('[data-close]').forEach(button=>button.onclick=()=>$(button.dataset.close).close());
+function openPayment(kind) {
+  if(!activeCycle)return;
+  paymentKind=kind;paymentTarget={...activeCycle};
+  $('paymentTitle').textContent=kind==='salary'?'Отметить выплату':'Добавить аванс';
+  $('paymentContext').textContent='Цикл №'+(activeCycle.index+1)+' · '+fmt(activeCycle.start)+' — '+fmt(activeCycle.end);
+  $('paymentDate').value=todayKey;$('paymentAmount').value='';$('paymentNote').value='';$('paymentDialog').showModal();
+}
 $('markPaid').onclick=()=>openPayment('salary');$('addAdvance').onclick=()=>openPayment('advance');
-$('paymentForm').onsubmit=e=>{e.preventDefault();const date=$('paymentDate').value,raw=$('paymentAmount').value,amount=raw===''?null:Number(raw);if(!paymentTarget||!Number.isFinite(parse(date))||(amount!==null&&(!Number.isFinite(amount)||amount<0)))return;if(paymentKind==='salary'&&cycleRecords(paymentTarget).some(p=>p.kind==='salary'))return;payments.push({id:globalThis.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2),group:paymentTarget.group,index:paymentTarget.index,kind:paymentKind,date,amount,note:$('paymentNote').value.trim()});saveExtra();$('paymentDialog').close();update();toast(paymentKind==='salary'?'Выплата отмечена':'Аванс добавлен')};
-const originalStartChange=$('start').onchange;$('start').onchange=()=>{cycleIndex=0;originalStartChange();cycleIndex=findCurrentCycle();renderCycle()};
-for(const id of ['prev','next','today','toStart']){const handler=$(id).onclick;$(id).onclick=()=>{handler();animateElement($('calendar'),id==='prev'?-1:1)}}
-cycleIndex=findCurrentCycle();saveExtra();
+$('paymentDialog').addEventListener('close',()=>{paymentTarget=null});
+$('paymentForm').onsubmit=event=>{
+  event.preventDefault();const date=$('paymentDate').value,raw=$('paymentAmount').value,amount=raw===''?null:Number(raw);
+  if(!paymentTarget||!Number.isFinite(parse(date))||(amount!==null&&(!Number.isFinite(amount)||amount<0||amount>999999999)))return;
+  if(paymentKind==='salary'&&cycleRecords(paymentTarget).some(p=>p.kind==='salary'))return;
+  payments.push({id:globalThis.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2),group:paymentTarget.group,index:paymentTarget.index,kind:paymentKind,date,amount:amount===null?null:Math.round(amount*100)/100,note:$('paymentNote').value.trim().slice(0,160)});
+  $('paymentDialog').close();update();toast(paymentKind==='salary'?'Выплата отмечена':'Аванс добавлен');
+};
+
+// Клик по фону закрывает любой диалог без сохранения.
+// Клик внутри, в том числе по внутренним отступам, не закрывает окно.
+document.querySelectorAll('dialog').forEach(dialog=>{
+  let startedOutside=false;
+  function isOutside(event) {
+    const rect=dialog.getBoundingClientRect();
+    return event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom;
+  }
+  dialog.addEventListener('pointerdown',event=>{
+    startedOutside=event.button===0 && event.target===dialog && isOutside(event);
+  });
+  dialog.addEventListener('click',event=>{
+    const shouldClose=startedOutside && event.target===dialog && isOutside(event);
+    startedOutside=false;
+    if(shouldClose)dialog.close();
+  });
+  dialog.addEventListener('pointercancel',()=>{startedOutside=false});
+  dialog.addEventListener('close',()=>{startedOutside=false});
+  dialog.addEventListener('cancel',()=>{startedOutside=false});
+});
+cycleIndex=findCurrentCycle();
 update();
-</script></body></html>
+
+</script>
+</body>
+</html>
