@@ -20,7 +20,7 @@ input,select{transition:border-color .2s,box-shadow .2s}.panel{animation:panelIn
 .cycle-card{background:#0e1829;border:1px solid var(--line);border-radius:14px;padding:16px}.cycle-caption,.cycle-countdown{font-size:12px;color:var(--muted)}.cycle-date{font-size:clamp(23px,2.4vw,29px);font-weight:750;color:var(--blue);line-height:1.3;margin:5px 0}.cycle-countdown{margin-top:5px}
 .progress-track{height:7px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:16px}.progress-fill{width:0;height:100%;background:var(--blue);border-radius:20px;transition:width .65s cubic-bezier(.2,.7,.2,1)}.progress-label{font-size:12px;color:var(--muted);margin-top:8px}.progress-label span:last-child{color:var(--text)}
 .cycle-rows{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}.cycle-row{padding:5px 0;font-size:12px}.cycle-row span:first-child{color:var(--muted)}.cycle-row span:last-child{text-align:right}
-.cycle-actions{display:grid;grid-template-columns:1.4fr .75fr 1.1fr;gap:7px;margin-top:14px}.cycle-actions button{font-size:12px;padding:10px 6px}.cycle-actions .wide{grid-column:1/-1}
+.cycle-actions{display:grid;grid-template-columns:1.4fr 1.1fr;gap:7px;margin-top:14px}.cycle-actions button{font-size:12px;padding:10px 6px}.cycle-actions .wide{grid-column:1/-1}
 .cycle-help{font-size:11px;color:var(--muted);line-height:1.7;margin-top:12px}.cycle-next{font-size:12px;color:var(--muted);margin-top:12px}.cycle-status:empty{display:none}.cycle-status{margin-top:10px}.badge{display:inline-flex;border-radius:20px;padding:3px 9px;background:#122d2b;color:var(--green);font-size:11px}
 .cycle-history{margin-top:14px}.cycle-history summary{cursor:pointer;font-size:12px;color:var(--muted);padding:8px 0}.history-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:10px;justify-content:space-between}.history-item small{display:block;color:var(--muted);margin-top:3px}.history-item button{font-size:11px;padding:4px 8px;align-self:center}
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:#22314a;border:1px solid #3b5277;color:var(--text);padding:12px 18px;border-radius:12px;box-shadow:0 10px 35px #0005;z-index:99;transition:opacity .2s,transform .2s;max-width:calc(100% - 28px);font-size:13px}.toast.visible{opacity:1;transform:translate(-50%,0)}
@@ -28,9 +28,12 @@ dialog{max-height:calc(100dvh - 28px);overflow:auto}dialog[open]{animation:modal
 @keyframes panelIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}@keyframes backdropIn{from{opacity:0}to{opacity:1}}@keyframes focusDay{50%{box-shadow:0 0 0 4px #81b3ff66}}
 @media(max-width:480px){.cycle-date{font-size:25px}.cycle-card{padding:14px 12px}.cycle-actions{grid-template-columns:1fr 1fr}.cycle-actions button:nth-child(3),.cycle-actions .wide{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.report-dialog{width:min(1000px,calc(100% - 24px));padding:20px}.report-dialog .modalhead{position:sticky;top:-20px;background:var(--panel);padding:12px 0;z-index:1}.report-page{margin:18px 0 28px}.report-page img{display:block;width:100%;height:auto;border-radius:12px;background:#fff;margin-bottom:12px}.report-page a{display:inline-block;background:#3873c9;border:1px solid #6b9cde;border-radius:10px;padding:10px 16px;color:#fff;text-decoration:none;font-weight:600}.report-page a:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 </style>
 </head>
 <body><main class="wrap"><h1>Календарь часов</h1><p class="subtitle">Ваш график, выходные и дата зарплаты</p><div class="layout"><section class="panel"><div class="dates"><div><label for="start">Начальная дата</label><input id="start" type="date" min="1900-01-01" max="9998-12-31"></div><div><label for="end">Конечная дата</label><input id="end" type="date" min="1900-01-01" max="9998-12-31"></div></div><div id="error" class="error" role="alert"></div><div class="nav"><button id="prev" aria-label="Предыдущий месяц">‹</button><strong id="month"></strong><button id="next" aria-label="Следующий месяц">›</button></div><div class="week"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div><div id="calendar" class="grid"></div><div class="legend"><span><i class="dot" style="background:#3c6598"></i>Выбранный период</span><span><i class="dot" style="background:#91733e"></i>Свои часы</span><span><i class="dot" style="background:#804457"></i>Выходной</span><span><i class="dot" style="background:#6ce3b7"></i>Зарплата</span></div><div class="hint">Нажмите на день, чтобы изменить часы или отметить выходной. По умолчанию каждый день — 12 часов, включая субботу и воскресенье.</div><div class="actions"><button id="today">Текущий месяц</button><button id="toStart">К начальной дате</button><button id="reset">Сбросить изменения периода</button></div><div id="changes" class="changes"></div></section><section class="panel"><h2>Итоги выбранного периода</h2><div class="stats"><div class="stat main"><span class="caption">Всего рабочих часов</span><div class="value" id="hours">—</div></div><div class="stat"><span class="caption">Рабочих дней</span><div class="value" id="worked">—</div></div><div class="stat"><span class="caption">Выходных</span><div class="value" id="rest">—</div></div></div><div class="detail" id="period"></div><div class="detail" id="customInfo"></div>
+<div class="actions"><button id="exportReport" class="primary">Скриншот отчёта</button></div><div class="detail">PNG с днями, часами и итогами выбранного периода, включая выходные.</div>
 <div class="cycle-section">
   <div class="cycle-head"><h2>Зарплатный цикл</h2><button id="cycleSettings" class="smallbtn">Настроить</button></div>
   <div class="cycle-nav"><button id="cyclePrev" aria-label="Предыдущий цикл">‹</button><span id="cycleLabel"></span><button id="cycleNext" aria-label="Следующий цикл">›</button></div>
@@ -42,12 +45,11 @@ dialog{max-height:calc(100dvh - 28px);overflow:auto}dialog[open]{animation:modal
       <div class="cycle-row"><span>Период цикла</span><span id="cyclePeriod"></span></div>
       <div class="cycle-row"><span>Всего часов за цикл</span><span id="cycleHours"></span></div>
       <div class="cycle-row"><span>Рабочих / выходных</span><span id="cycleDays"></span></div>
-      <div class="cycle-row"><span>Авансы за цикл</span><span id="cycleAdvances"></span></div>
     </div><div id="cycleStatus" class="cycle-status"></div>
   </div>
-  <div class="cycle-actions"><button id="markPaid" class="primary">Отметить выплату</button><button id="addAdvance">Аванс</button><button id="showCyclePay">На календаре</button><button id="currentCycle" class="wide">Текущий цикл</button></div>
+  <div class="cycle-actions"><button id="markPaid" class="primary">Отметить выплату</button><button id="showCyclePay">На календаре</button><button id="currentCycle" class="wide">Текущий цикл</button></div>
   <div id="cycleHelp" class="cycle-help"></div><div id="cycleUpcoming" class="cycle-next"></div>
-  <details class="cycle-history"><summary>История выплат и авансов</summary><div id="paymentHistory"></div></details>
+  <details class="cycle-history"><summary>История выплат</summary><div id="paymentHistory"></div></details>
 </div>
 </section></div><div id="saved" class="footer">Данные сохраняются в этом браузере на этом устройстве. Интернет не требуется. Будущие дни без ручных изменений считаются по 12 часов.</div></main>
 <dialog id="editor" aria-labelledby="editTitle"><form id="editForm"><div class="modalhead"><h2 id="editTitle">Часы за день</h2><button type="button" id="closeEdit" aria-label="Закрыть">×</button></div><div id="editDate" class="muted" style="margin-bottom:18px"></div><label for="dayHours">Сколько часов работали?</label><input id="dayHours" type="number" min="0" max="24" step="0.01" inputmode="decimal" required><div class="quick"><button type="button" data-hours="0">Выходной</button><button type="button" data-hours="9">9 ч</button><button type="button" data-hours="10">10 ч</button><button type="button" data-hours="12">12 ч</button></div><div class="modnote">Можно указать своё значение от 0 до 24 часов, в том числе дробное: например 9,5. Ноль часов означает выходной.</div><div id="editError" class="error" role="alert"></div><div class="modalbuttons"><button type="submit" class="primary">Сохранить</button><button type="button" id="defaultHours">Вернуть 12 часов</button><button type="button" id="cancelEdit">Отмена</button></div></form></dialog>
@@ -71,6 +73,12 @@ dialog{max-height:calc(100dvh - 28px);overflow:auto}dialog[open]{animation:modal
   <div class="modnote">Запись в личном журнале не меняет часы и границы циклов и не выполняет перевод денег.</div>
   <div class="modalbuttons"><button class="primary" type="submit">Сохранить запись</button><button type="button" data-close="paymentDialog">Отмена</button></div>
 </form></dialog>
+<dialog id="reportDialog" class="report-dialog" aria-labelledby="reportTitle">
+  <div class="modalhead"><h2 id="reportTitle">Скриншот отчёта</h2><button type="button" data-close="reportDialog" aria-label="Закрыть">×</button></div>
+  <p class="detail">Сохраните PNG для отправки или отчёта. Для длинного периода изображения разделены на части, чтобы даты и часы оставались читаемыми. На телефоне изображение также можно сохранить долгим нажатием.</p>
+  <div id="reportPages" aria-live="polite"></div>
+  <div class="actions"><button id="reportMore" type="button" hidden>Показать следующие части</button></div>
+</dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -114,7 +122,7 @@ $('mode').value = saved.mode === 'calendar' ? 'calendar' : 'work';
 let viewDate = new Date(parse($('start').value));
 let viewY = viewDate.getUTCFullYear(), viewM = viewDate.getUTCMonth();
 let cycleIndex = 0, activeCycle = null, payDates = [], editKey = null;
-let paymentKind = 'salary', paymentTarget = null, toastTimer;
+let paymentTarget = null, toastTimer;
 const hoursFor = date => Object.hasOwn(overrides,date) ? overrides[date] : 12;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function toast(message) {
@@ -230,11 +238,12 @@ function renderChanges() {
 function cycleRecords(c) {return payments.filter(p=>p.group===c.group&&p.index===c.index)}
 function renderHistory() {
   const root=$('paymentHistory');root.replaceChildren();
-  if(!payments.length){root.textContent='Записей пока нет.';root.className='detail';return}
+  const salaries=payments.filter(p=>p.kind==='salary');
+  if(!salaries.length){root.textContent='Записей пока нет.';root.className='detail';return}
   root.className='';
-  for(const p of [...payments].reverse()) {
+  for(const p of [...salaries].reverse()) {
     const row=document.createElement('div');row.className='history-item';
-    const text=document.createElement('div');text.textContent=(p.kind==='salary'?'Зарплата':'Аванс')+' · '+fmt(parse(p.date))+(p.amount!==null?' · '+num(p.amount):'');
+    const text=document.createElement('div');text.textContent='Зарплата'+' · '+fmt(parse(p.date))+(p.amount!==null?' · '+num(p.amount):'');
     const detail=document.createElement('small');detail.textContent='Цикл №'+(p.index+1)+' · начало '+p.group.split('|')[0]+(p.note?' · '+p.note:'');text.append(detail);
     const del=document.createElement('button');del.type='button';del.textContent='Удалить';
     del.onclick=()=>{if(confirm('Удалить эту запись из истории?')){payments=payments.filter(x=>x.id!==p.id);update();toast('Запись удалена')}};
@@ -243,13 +252,13 @@ function renderHistory() {
 }
 function renderCycle() {
   const valid=validPeriod();activeCycle=null;payDates=[];
-  for(const id of ['cyclePrev','cycleNext','markPaid','addAdvance','showCyclePay','currentCycle'])$(id).disabled=!valid;
+  for(const id of ['cyclePrev','cycleNext','markPaid','showCyclePay','currentCycle'])$(id).disabled=!valid;
   const c=valid?cycleAt(cycleIndex):null;
   if(!c||!Number.isFinite(c.start)||!Number.isFinite(c.end)) {
-    for(const id of ['cycleDate','cycleLabel','cycleCountdown','cyclePeriod','cycleHours','cycleDays','cycleAdvances','cycleProgressText','cyclePercent','cycleUpcoming','cycleStatus'])$(id).textContent='—';
+    for(const id of ['cycleDate','cycleLabel','cycleCountdown','cyclePeriod','cycleHours','cycleDays','cycleProgressText','cyclePercent','cycleUpcoming','cycleStatus'])$(id).textContent='—';
     $('cycleFill').style.width='0%';$('cycleProgress').setAttribute('aria-valuenow','0');
     $('cycleHelp').textContent=valid?'Дата выплаты выходит за допустимый диапазон дат.':'Укажите корректный период.';
-    for(const id of ['markPaid','addAdvance','showCyclePay','cycleNext'])$(id).disabled=true;
+    for(const id of ['markPaid','showCyclePay','cycleNext'])$(id).disabled=true;
     $('cyclePrev').disabled=!valid||cycleIndex===0;return;
   }
   activeCycle=c;const t=total(c.start,c.end),work=$('mode').value==='work';
@@ -263,8 +272,7 @@ function renderCycle() {
   $('cyclePercent').textContent=percent+'%';$('cycleFill').style.width=percent+'%';$('cycleProgress').setAttribute('aria-valuenow',String(percent));
   $('cyclePeriod').textContent=shortDate(c.start)+' — '+shortDate(c.end)+(new Date(c.start).getUTCFullYear()!==new Date(c.end).getUTCFullYear()?' '+new Date(c.end).getUTCFullYear():'');
   $('cycleHours').textContent=num(t.hours)+' ч';$('cycleDays').textContent=t.worked+' / '+t.rest;
-  const records=cycleRecords(c),advances=records.filter(p=>p.kind==='advance'),paid=records.find(p=>p.kind==='salary');
-  $('cycleAdvances').textContent=advances.length?num(advances.reduce((sum,p)=>sum+(p.amount||0),0))+' · записей: '+advances.length:'Нет';
+  const paid=cycleRecords(c).find(p=>p.kind==='salary');
   $('cycleStatus').replaceChildren();
   if(paid){const badge=document.createElement('span');badge.className='badge';badge.textContent='✓ Выплачено · '+shortDate(parse(paid.date))+(paid.amount!==null?' · '+num(paid.amount):'');$('cycleStatus').append(badge)}
   $('markPaid').disabled=!!paid;$('markPaid').textContent=paid?'Выплата отмечена':'Отметить выплату';
@@ -277,7 +285,7 @@ function renderCycle() {
 function update() {
   persist();const valid=validPeriod(),a=parse($('start').value),b=parse($('end').value);
   $('error').textContent=valid?'':'Укажите корректные даты: конечная дата должна быть не раньше начальной.';
-  $('reset').disabled=!valid;$('toStart').disabled=!Number.isFinite(a);
+  $('exportReport').disabled=!valid;$('reset').disabled=!valid;$('toStart').disabled=!Number.isFinite(a);
   if(valid) {
     const t=total(a,b);$('hours').textContent=num(t.hours)+' ч';$('worked').textContent=num(t.worked);$('rest').textContent=num(t.rest);
     $('period').textContent=fmt(a)+' — '+fmt(b)+' · '+num(t.days)+' календарных дней.';
@@ -315,22 +323,131 @@ $('settingsForm').onsubmit=event=>{
   $('settingsDialog').close();update();toast('Настройки цикла сохранены');
 };
 document.querySelectorAll('[data-close]').forEach(button=>button.onclick=()=>$(button.dataset.close).close());
-function openPayment(kind) {
+function openPayment() {
   if(!activeCycle)return;
-  paymentKind=kind;paymentTarget={...activeCycle};
-  $('paymentTitle').textContent=kind==='salary'?'Отметить выплату':'Добавить аванс';
+  paymentTarget={...activeCycle};
+  $('paymentTitle').textContent='Отметить выплату';
   $('paymentContext').textContent='Цикл №'+(activeCycle.index+1)+' · '+fmt(activeCycle.start)+' — '+fmt(activeCycle.end);
   $('paymentDate').value=todayKey;$('paymentAmount').value='';$('paymentNote').value='';$('paymentDialog').showModal();
 }
-$('markPaid').onclick=()=>openPayment('salary');$('addAdvance').onclick=()=>openPayment('advance');
+$('markPaid').onclick=openPayment;
 $('paymentDialog').addEventListener('close',()=>{paymentTarget=null});
 $('paymentForm').onsubmit=event=>{
   event.preventDefault();const date=$('paymentDate').value,raw=$('paymentAmount').value,amount=raw===''?null:Number(raw);
   if(!paymentTarget||!Number.isFinite(parse(date))||(amount!==null&&(!Number.isFinite(amount)||amount<0||amount>999999999)))return;
-  if(paymentKind==='salary'&&cycleRecords(paymentTarget).some(p=>p.kind==='salary'))return;
-  payments.push({id:globalThis.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2),group:paymentTarget.group,index:paymentTarget.index,kind:paymentKind,date,amount:amount===null?null:Math.round(amount*100)/100,note:$('paymentNote').value.trim().slice(0,160)});
-  $('paymentDialog').close();update();toast(paymentKind==='salary'?'Выплата отмечена':'Аванс добавлен');
+  if(cycleRecords(paymentTarget).some(p=>p.kind==='salary'))return;
+  payments.push({id:globalThis.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random().toString(36).slice(2),group:paymentTarget.group,index:paymentTarget.index,kind:'salary',date,amount:amount===null?null:Math.round(amount*100)/100,note:$('paymentNote').value.trim().slice(0,160)});
+  $('paymentDialog').close();update();toast('Выплата отмечена');
 };
+
+// Report uses Canvas only: offline, without external fonts or screenshot libraries.
+let reportState=null, reportUrls=[];
+function clearReport() {
+  reportState=null;
+  reportUrls.forEach(url=>URL.revokeObjectURL(url));reportUrls=[];
+  $('reportPages').replaceChildren();$('reportMore').hidden=true;
+}
+function reportCanvas(state,part) {
+  const months=state.months.slice(part*4,part*4+4),rows=Math.ceil(months.length/2);
+  const width=1120,height=428+rows*404;
+  const canvas=document.createElement('canvas');
+  canvas.width=width*2;canvas.height=height*2;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)throw new Error('Canvas unavailable');
+  ctx.scale(2,2);
+  const ink='#172b46',muted='#526780',blue='#235fc1';
+  function box(x,y,w,h,fill,r=14) {
+    ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();
+  }
+  function text(value,x,y,size=16,color=ink,weight=400) {
+    ctx.font=weight+' '+size+'px system-ui, Segoe UI, sans-serif';
+    ctx.fillStyle=color;ctx.fillText(String(value),x,y);
+  }
+  ctx.fillStyle='#eff4fa';ctx.fillRect(0,0,width,height);
+  box(0,0,width,154,'#172b46',0);
+  text('ОТЧЁТ О РАБОЧЕМ ВРЕМЕНИ',40,43,14,'#afc9ee',700);
+  text('График работы',40,86,32,'#ffffff',750);
+  text(fmt(state.a)+' — '+fmt(state.b),40,124,19,'#e0eafa');
+  const t=state.t;
+  [['Всего дней',num(t.days)],['Рабочих дней',num(t.worked)],['Выходных',num(t.rest)],['Всего часов',num(t.hours)+' ч']].forEach(([label,value],i)=>{
+    const x=40+i*264;box(x,178,248,100,'#ffffff');
+    text(label,x+18,207,15,muted);text(value,x+18,253,32,i===3?blue:ink,750);
+  });
+  text('Всего дней = рабочие + выходные. Итоги за весь выбранный период.',40,309,16,muted);
+  [['#dceaff','Рабочий день'],['#fff0cc','Свои часы'],['#fce3eb','Выходной · 0 ч']].forEach(([color,label],i)=>{
+    const x=40+i*245;box(x,331,14,14,color,4);text(label,x+23,344,14,muted);
+  });
+  const weekdays=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  months.forEach((month,i)=>{
+    const single=months.length===1,cardWidth=single?1040:512,step=(cardWidth-32)/7;
+    const x=40+(i%2)*528,y=370+Math.floor(i/2)*404;
+    box(x,y,cardWidth,386,'#ffffff');
+    const title=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
+    text(title[0].toUpperCase()+title.slice(1),x+18,y+34,21,ink,700);
+    const date=new Date(month),year=date.getUTCFullYear(),m=date.getUTCMonth();
+    const count=new Date(Date.UTC(year,m+1,0)).getUTCDate(),offset=(date.getUTCDay()+6)%7;
+    weekdays.forEach((d,j)=>text(d,x+28+j*step,y+65,13,muted,600));
+    for(let d=1;d<=count;d++) {
+      const n=Date.UTC(year,m,d),index=offset+d-1,cx=x+16+(index%7)*step,cy=y+78+Math.floor(index/7)*48;
+      if(n<state.a||n>state.b){text(d,cx+8,cy+20,15,'#a7b2c0');continue}
+      const h=Object.hasOwn(state.hours,key(n))?state.hours[key(n)]:12;
+      box(cx,cy,step-5,43,h===0?'#fce3eb':h!==12?'#fff0cc':'#dceaff',7);
+      text(d,cx+7,cy+18,15,ink,700);
+      text(h===0?'Вых · 0 ч':num(h)+' ч',cx+7,cy+35,h===0?10:12,h===0?'#942c51':ink,600);
+    }
+    let hours=0,worked=0,rest=0;
+    for(let d=1;d<=count;d++) {
+      const n=Date.UTC(year,m,d);if(n<state.a||n>state.b)continue;
+      const h=Object.hasOwn(state.hours,key(n))?state.hours[key(n)]:12;
+      hours+=h;if(h===0)rest++;else worked++;
+    }
+    text(num(hours)+' ч  ·  Рабочих: '+worked+'  ·  Выходных: '+rest,x+18,y+359,14,muted,600);
+  });
+  text('12 ч по умолчанию. Выходной — день, отмеченный как 0 ч.',40,height-25,13,muted);
+  ctx.textAlign='right';text('Часть '+(part+1)+' / '+state.parts,width-40,height-25,13,muted);ctx.textAlign='left';
+  return canvas;
+}
+async function appendReportParts() {
+  const state=reportState;if(!state||state.busy)return;
+  state.busy=true;$('reportMore').disabled=true;
+  try {
+    // Generate at most three images per batch; even very long periods stay usable.
+    const until=Math.min(state.next+3,state.parts);
+    while(state.next<until&&reportState===state) {
+      const part=state.next,canvas=reportCanvas(state,part);
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+      canvas.width=canvas.height=0;
+      if(reportState!==state)return;
+      if(!blob)throw new Error('PNG encoding failed');
+      const url=URL.createObjectURL(blob);reportUrls.push(url);
+      const page=document.createElement('div');page.className='report-page';
+      const img=document.createElement('img');img.src=url;img.alt='График работы с часами и выходными. Часть '+(part+1);img.loading='lazy';
+      const link=document.createElement('a');link.href=url;
+      link.download='График_'+key(state.a)+'_'+key(state.b)+(state.parts>1?'_'+(part+1):'')+'.png';
+      link.textContent='Сохранить PNG'+(state.parts>1?' · часть '+(part+1)+' из '+state.parts:'');
+      page.append(img,link);$('reportPages').append(page);state.next++;
+    }
+  } catch(error) {
+    if(reportState===state)toast('Не удалось создать изображение. Попробуйте ещё раз.');
+    console.error('Report export failed',error);
+  } finally {
+    if(reportState===state){state.busy=false;$('reportMore').disabled=false;$('reportMore').hidden=state.next>=state.parts}
+  }
+}
+$('exportReport').onclick=()=>{
+  if(!validPeriod())return;
+  clearReport();
+  const a=parse($('start').value),b=parse($('end').value),months=[];
+  const first=new Date(a),last=new Date(b);
+  const endMonth=Date.UTC(last.getUTCFullYear(),last.getUTCMonth(),1);
+  for(let n=Date.UTC(first.getUTCFullYear(),first.getUTCMonth(),1);n<=endMonth;) {
+    months.push(n);const date=new Date(n);n=Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,1);
+  }
+  reportState={a,b,t:total(a,b),hours:{...overrides},months,parts:Math.ceil(months.length/4),next:0,busy:false};
+  $('reportDialog').showModal();appendReportParts();
+};
+$('reportMore').onclick=appendReportParts;
+$('reportDialog').addEventListener('close',clearReport);
 
 // Клик по фону закрывает любой диалог без сохранения.
 // Клик внутри, в том числе по внутренним отступам, не закрывает окно.
