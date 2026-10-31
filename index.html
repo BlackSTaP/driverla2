@@ -355,7 +355,7 @@ function reportCanvas(state,part) {
   const ctx=canvas.getContext('2d');
   if(!ctx)throw new Error('Canvas unavailable');
   ctx.scale(2,2);
-  const ink='#172b46',muted='#526780',blue='#235fc1';
+  const ink='#eef3ff',muted='#a4b2ca',blue='#81b3ff';
   function box(x,y,w,h,fill,r=14) {
     ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();
   }
@@ -363,25 +363,25 @@ function reportCanvas(state,part) {
     ctx.font=weight+' '+size+'px system-ui, Segoe UI, sans-serif';
     ctx.fillStyle=color;ctx.fillText(String(value),x,y);
   }
-  ctx.fillStyle='#eff4fa';ctx.fillRect(0,0,width,height);
-  box(0,0,width,154,'#172b46',0);
-  text('ОТЧЁТ О РАБОЧЕМ ВРЕМЕНИ',40,43,14,'#afc9ee',700);
-  text('График работы',40,86,32,'#ffffff',750);
-  text(fmt(state.a)+' — '+fmt(state.b),40,124,19,'#e0eafa');
+  ctx.fillStyle='#0c1220';ctx.fillRect(0,0,width,height);
+  box(0,0,width,154,'#141e30',0);
+  text('ОТЧЁТ О РАБОЧЕМ ВРЕМЕНИ',40,43,14,muted,700);
+  text('График работы',40,86,32,ink,750);
+  text(fmt(state.a)+' — '+fmt(state.b),40,124,19,muted);
   const t=state.t;
   [['Всего дней',num(t.days)],['Рабочих дней',num(t.worked)],['Выходных',num(t.rest)],['Всего часов',num(t.hours)+' ч']].forEach(([label,value],i)=>{
-    const x=40+i*264;box(x,178,248,100,'#ffffff');
+    const x=40+i*264;box(x,178,248,100,'#0e1829');
     text(label,x+18,207,15,muted);text(value,x+18,253,32,i===3?blue:ink,750);
   });
   text('Всего дней = рабочие + выходные. Итоги за весь выбранный период.',40,309,16,muted);
-  [['#dceaff','Рабочий день'],['#fff0cc','Свои часы'],['#fce3eb','Выходной · 0 ч']].forEach(([color,label],i)=>{
+  [['#3c6598','Рабочий день'],['#91733e','Свои часы'],['#804457','Выходной · 0 ч']].forEach(([color,label],i)=>{
     const x=40+i*245;box(x,331,14,14,color,4);text(label,x+23,344,14,muted);
   });
   const weekdays=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   months.forEach((month,i)=>{
     const single=months.length===1,cardWidth=single?1040:512,step=(cardWidth-32)/7;
     const x=40+(i%2)*528,y=370+Math.floor(i/2)*404;
-    box(x,y,cardWidth,386,'#ffffff');
+    box(x,y,cardWidth,386,'#141e30');
     const title=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
     text(title[0].toUpperCase()+title.slice(1),x+18,y+34,21,ink,700);
     const date=new Date(month),year=date.getUTCFullYear(),m=date.getUTCMonth();
@@ -389,11 +389,11 @@ function reportCanvas(state,part) {
     weekdays.forEach((d,j)=>text(d,x+28+j*step,y+65,13,muted,600));
     for(let d=1;d<=count;d++) {
       const n=Date.UTC(year,m,d),index=offset+d-1,cx=x+16+(index%7)*step,cy=y+78+Math.floor(index/7)*48;
-      if(n<state.a||n>state.b){text(d,cx+8,cy+20,15,'#a7b2c0');continue}
+      if(n<state.a||n>state.b){text(d,cx+8,cy+20,15,muted);continue}
       const h=Object.hasOwn(state.hours,key(n))?state.hours[key(n)]:12;
-      box(cx,cy,step-5,43,h===0?'#fce3eb':h!==12?'#fff0cc':'#dceaff',7);
+      box(cx,cy,step-5,43,h===0?'#422735':h!==12?'#3d3524':'#203b5e',7);
       text(d,cx+7,cy+18,15,ink,700);
-      text(h===0?'Вых · 0 ч':num(h)+' ч',cx+7,cy+35,h===0?10:12,h===0?'#942c51':ink,600);
+      text(h===0?'Вых · 0 ч':num(h)+' ч',cx+7,cy+35,h===0?10:12,h===0?'#ffb3c3':h!==12?'#f2cf88':muted,600);
     }
     let hours=0,worked=0,rest=0;
     for(let d=1;d<=count;d++) {
